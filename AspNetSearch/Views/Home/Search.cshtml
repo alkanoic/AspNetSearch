@@ -1,0 +1,87 @@
+﻿@model AspNetSearch.ViewModels.SearchViewModel
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2>Search</h2>
+
+<input type="text" id="inputName" class="form-control" onchange="textOnChange(this)" />
+
+@using (Ajax.BeginForm("AjaxList", "Home",
+    new AjaxOptions
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "addSearchControl",
+        InsertionMode = InsertionMode.InsertAfter
+    }))
+{
+    <input type="hidden" id="searchWhereName" name="searchWhereName" />
+    <input type="submit" class="btn btn-info" value="Where追加" />
+}
+
+@using (Ajax.BeginForm("AjaxGroupList", "Home",
+    new AjaxOptions
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "addGroupControl",
+        InsertionMode = InsertionMode.InsertAfter
+    }))
+{
+    <input type="hidden" id="searchGroupName" name="searchGroupName" />
+    <input type="submit" class="btn btn-info" value="Group追加" />
+}
+
+@using (Ajax.BeginForm("AjaxSelectList", "Home",
+    new AjaxOptions
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "addSelectControl",
+        InsertionMode = InsertionMode.InsertAfter
+    }))
+{
+    <input type="hidden" id="searchSelectName" name="searchSelectName" />
+    <input type="submit" class="btn btn-info" value="Select追加" />
+}
+
+
+@using (Html.BeginForm("SearchPost", "Home", "POST"))
+{
+    <div id="addSearchControl">
+
+    </div>
+
+    <br />
+
+    <div id="addGroupControl">
+
+    </div>
+
+    <br />
+
+    <div id="addSelectControl">
+
+    </div>
+
+    <br />
+
+    <div>
+        <input type="submit" class="btn btn-primary" value="Search" />
+    </div>
+}
+
+@section scripts{
+
+    <script>
+        function deleteControl(id) {
+            document.getElementById(id).remove();
+        }
+
+        function textOnChange($this) {
+            document.getElementById('searchWhereName').value = $this.value;
+            document.getElementById('searchGroupName').value = $this.value;
+            document.getElementById('searchSelectName').value = $this.value;
+        }
+    </script>
+
+}
+

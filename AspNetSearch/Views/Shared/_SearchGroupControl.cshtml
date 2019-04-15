@@ -1,0 +1,10 @@
+﻿@model AspNetSearch.ViewModels.SearchGroupControlViewModel
+
+    <div id="@Model.SearchId" class="form-inline">
+        <input type="button" value="delete" class="btn btn-danger btn-sm ml-1" onclick="deleteControl(@Model.SearchId)" />
+
+        <label class="">@Model.SearchGroupName</label>
+        @Html.HiddenFor(m => m.SearchGroupName)
+
+    </div>
+<br />

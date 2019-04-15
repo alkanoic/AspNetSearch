@@ -1,0 +1,16 @@
+﻿@model AspNetSearch.ViewModels.SearchSelectControlViewModel
+
+    <div id="@Model.SearchId" class="form-inline">
+        <input type="button" value="delete" class="btn btn-danger btn-sm ml-1" onclick="deleteControl(@Model.SearchId)" />
+
+        <label class="">@Model.SearchSelectName</label>
+        @Html.HiddenFor(m => m.SearchSelectName)
+        @Html.DropDownListFor(m => m.SearchSelectValue, new SelectListItem[] {
+            new SelectListItem() { Value="1", Text="Select" },
+            new SelectListItem() { Value="2", Text="Sum" },
+            new SelectListItem() { Value="3", Text="Avg" }
+            },
+            "選択してください", new { @class = "form-control ml-1" })
+
+    </div>
+<br />
