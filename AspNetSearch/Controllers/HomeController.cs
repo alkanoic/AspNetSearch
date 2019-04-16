@@ -19,7 +19,6 @@ namespace AspNetSearch.Controllers
         public ActionResult Search()
         {
             var vm = new AspNetSearch.ViewModels.SearchViewModel();
-            vm.Controls = new List<AspNetSearch.ViewModels.SearchControlViewModel>();
             return View(vm);
         }
 
@@ -28,10 +27,10 @@ namespace AspNetSearch.Controllers
         [HttpPost]
         public ActionResult AjaxList(string searchWhereName)
         {
-            var vm = new AspNetSearch.ViewModels.SearchControlViewModel();
+            var vm = new AspNetSearch.ViewModels.SearchWhereControlViewModel();
             vm.SearchId = id++;
             vm.SearchName = searchWhereName;
-            return PartialView("_SearchControl", vm);
+            return PartialView("_SearchWhereControl", vm);
         }
 
         [HttpPost]
@@ -62,7 +61,7 @@ namespace AspNetSearch.Controllers
                 model.WhereModel = new List<Models.SearchWhereModel>();
                 for (var i = 0; i <= SearchName.Length - 1; i++)
                 {
-                    var sm = new Models.SearchWhereModel(SearchName[i], int.Parse(SearchRange[i]), SearchValue[i]);
+                    var sm = new Models.SearchWhereModel(SearchName[i], (Models.WhereRangeEnum)int.Parse(SearchRange[i]), SearchValue[i]);
                     model.WhereModel.Add(sm);
                 }
             }
@@ -82,7 +81,7 @@ namespace AspNetSearch.Controllers
                 model.SelectModel = new List<Models.SearchSelectModel>();
                 for (var i = 0; i <= SearchSelectName.Length -1; i++)
                 {
-                    var sm = new Models.SearchSelectModel(SearchSelectName[i], int.Parse(SearchSelectValue[i]));
+                    var sm = new Models.SearchSelectModel(SearchSelectName[i], (Models.SelectValueEnum)int.Parse(SearchSelectValue[i]));
                     model.SelectModel.Add(sm);
                 }
             }
@@ -90,19 +89,27 @@ namespace AspNetSearch.Controllers
             var query = new DbExtensions.SqlBuilder();
             foreach(var item in model.SelectModel)
             {
-                query.SELECT(item.SelectColumn);
+                query.SELECT(item.ToSelectSql());
             }
             query.FROM("Log4Net");
-            foreach(var item in model.WhereModel)
+            if(model.WhereModel != null)
             {
-                query.WHERE(item.WhereColumn);
+                foreach (var item in model.WhereModel)
+                {
+                    query.WHERE(item.ToWhereSql(), item.WhereValue);
+                }
             }
-            foreach(var item in model.GroupModel)
+            if(model.GroupModel != null)
             {
-                query.GROUP_BY(item.GroupColumn);
+                foreach (var item in model.GroupModel)
+                {
+                    query.GROUP_BY(item.GroupColumn);
+                }
             }
 
-            return Redirect("Search");
+            var vm = new ViewModels.SearchQueryViewModel();
+            vm.Query = query.ToString();
+            return PartialView("_SearcgQuery", vm);
         }
 
     }

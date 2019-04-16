@@ -6,7 +6,7 @@ using System.Web;
 
 namespace AspNetSearch.ViewModels
 {
-    public class SearchControlViewModel
+    public class SearchWhereControlViewModel
     {
 
         public int SearchId { get; set; }

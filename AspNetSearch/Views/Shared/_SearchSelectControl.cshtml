@@ -6,11 +6,10 @@
         <label class="">@Model.SearchSelectName</label>
         @Html.HiddenFor(m => m.SearchSelectName)
         @Html.DropDownListFor(m => m.SearchSelectValue, new SelectListItem[] {
-            new SelectListItem() { Value="1", Text="Select" },
-            new SelectListItem() { Value="2", Text="Sum" },
-            new SelectListItem() { Value="3", Text="Avg" }
+            new SelectListItem() { Value="0", Text="Select" },
+            new SelectListItem() { Value="1", Text="Sum" },
+            new SelectListItem() { Value="2", Text="Avg" }
             },
             "選択してください", new { @class = "form-control ml-1" })
 
     </div>
-<br />

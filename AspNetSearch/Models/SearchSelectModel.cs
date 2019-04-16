@@ -10,13 +10,38 @@ namespace AspNetSearch.Models
 
         public string SelectColumn { get; set; }
 
-        public int SelectValue { get; set; }
+        public SelectValueEnum SelectValue { get; set; }
 
-        public SearchSelectModel(string column, int value)
+        public SearchSelectModel(string column, SelectValueEnum value)
         {
             SelectColumn = column;
             SelectValue = value;
         }
 
+        public string ToSelectSql()
+        {
+            switch (SelectValue)
+            {
+                case SelectValueEnum.Raw:
+                    return SelectColumn;
+
+                case SelectValueEnum.Sum:
+                    return $"SUM({SelectColumn})";
+
+                case SelectValueEnum.Avg:
+                    return $"AVG({SelectColumn})";
+            }
+
+            return SelectColumn;
+        }
+
     }
+
+    public enum SelectValueEnum
+    {
+        Raw,
+        Sum,
+        Avg
+    }
+
 }

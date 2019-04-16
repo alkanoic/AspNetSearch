@@ -44,7 +44,7 @@
 }
 
 
-@using (Html.BeginForm("SearchPost", "Home", "POST"))
+@using (Ajax.BeginForm("SearchPost", new AjaxOptions() { UpdateTargetId = "result", HttpMethod = "POST" }))
 {
     <div id="addSearchControl">
 
@@ -68,6 +68,13 @@
         <input type="submit" class="btn btn-primary" value="Search" />
     </div>
 }
+
+<br />
+
+<div id="result">
+
+</div>
+
 
 @section scripts{
 
