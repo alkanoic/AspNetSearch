@@ -10,15 +10,14 @@
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark">
-        @Html.ActionLink("アプリケーション名", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        @Html.ActionLink("アプリケーション名", "Index", "Search", new { area = "" }, new { @class = "navbar-brand" })
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">@Html.ActionLink("ホーム", "Index", "Home", new { @class="nav-link" })</li>
-                <li class="nav-item active">@Html.ActionLink("検索", "Search", "Home", new { @class="nav-link" })</li>
+                <li class="nav-item active">@Html.ActionLink("検索", "Index", "Search", null, new { @class="nav-link" })</li>
             </ul>
         </div>
     </nav>
