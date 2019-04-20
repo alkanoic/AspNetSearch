@@ -7,7 +7,7 @@
 
 <input type="text" id="inputName" class="form-control" onchange="textOnChange(this)" />
 
-@using (Ajax.BeginForm("AjaxList", "Home",
+@using (Ajax.BeginForm("AjaxList", "Search",
     new AjaxOptions
     {
         HttpMethod = "POST",
@@ -15,11 +15,12 @@
         InsertionMode = InsertionMode.InsertAfter
     }))
 {
+    @Html.AntiForgeryToken()
     <input type="hidden" id="searchWhereName" name="searchWhereName" />
     <input type="submit" class="btn btn-info" value="Where追加" />
 }
 
-@using (Ajax.BeginForm("AjaxGroupList", "Home",
+@using (Ajax.BeginForm("AjaxGroupList", "Search",
     new AjaxOptions
     {
         HttpMethod = "POST",
@@ -31,7 +32,7 @@
     <input type="submit" class="btn btn-info" value="Group追加" />
 }
 
-@using (Ajax.BeginForm("AjaxSelectList", "Home",
+@using (Ajax.BeginForm("AjaxSelectList", "Search",
     new AjaxOptions
     {
         HttpMethod = "POST",
@@ -67,6 +68,9 @@
     <div>
         <input type="submit" class="btn btn-primary" value="Search" />
     </div>
+
+    <input type="hidden" name="tableId" value="@Model.TableId" />
+    @Html.AntiForgeryToken()
 }
 
 <br />

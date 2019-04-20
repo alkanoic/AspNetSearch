@@ -1,0 +1,14 @@
+﻿@model AspNetSearch.ViewModels.SearchIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@foreach (var item in Model.Details)
+{
+
+    @Html.ActionLink(item.TableDisplayName, "Search", "Search", new { tableId = item.TableId }, new { @class="btn btn-info" })
+
+}
+
