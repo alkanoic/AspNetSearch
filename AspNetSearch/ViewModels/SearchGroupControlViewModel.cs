@@ -10,6 +10,9 @@ namespace AspNetSearch.ViewModels
 
         public int SearchId { get; set; }
 
+        public string SearchDisplayName { get; set; }
+
+
         public string SearchGroupName { get; set; }
 
     }

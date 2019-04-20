@@ -5,65 +5,98 @@
 
 <h2>Search</h2>
 
-<input type="text" id="inputName" class="form-control" onchange="textOnChange(this)" />
+<div class="form-inline">
 
-@using (Ajax.BeginForm("AjaxList", "Search",
-    new AjaxOptions
-    {
-        HttpMethod = "POST",
-        UpdateTargetId = "addSearchControl",
-        InsertionMode = InsertionMode.InsertAfter
-    }))
-{
-    @Html.AntiForgeryToken()
-    <input type="hidden" id="searchWhereName" name="searchWhereName" />
-    <input type="submit" class="btn btn-info" value="Where追加" />
-}
+    <select class="form-control" id="inputName" name="inputName" onchange="selectOnChange(this)">
+        @foreach (var i in Model.Columns)
+        {
+            <option value="@i.ColumnId">@i.ColumnDisplayName</option>
+        }
+    </select>
 
-@using (Ajax.BeginForm("AjaxGroupList", "Search",
-    new AjaxOptions
-    {
-        HttpMethod = "POST",
-        UpdateTargetId = "addGroupControl",
-        InsertionMode = InsertionMode.InsertAfter
-    }))
-{
-    <input type="hidden" id="searchGroupName" name="searchGroupName" />
-    <input type="submit" class="btn btn-info" value="Group追加" />
-}
+    <div class="ml-2">
 
-@using (Ajax.BeginForm("AjaxSelectList", "Search",
-    new AjaxOptions
-    {
-        HttpMethod = "POST",
-        UpdateTargetId = "addSelectControl",
-        InsertionMode = InsertionMode.InsertAfter
-    }))
-{
-    <input type="hidden" id="searchSelectName" name="searchSelectName" />
-    <input type="submit" class="btn btn-info" value="Select追加" />
-}
+        @using (Ajax.BeginForm("AjaxWhereList", "Search",
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                UpdateTargetId = "addSearchControl",
+                InsertionMode = InsertionMode.InsertAfter
+            }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="tableId" name="tableId" value="@Model.TableId" />
+            <input type="hidden" id="searchWhereColumnId" name="searchWhereColumnId" />
+            <input type="submit" class="btn btn-info" value="Where追加" />
+        }
+
+    </div>
+
+    <div class="ml-2">
+
+        @using (Ajax.BeginForm("AjaxGroupList", "Search",
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                UpdateTargetId = "addGroupControl",
+                InsertionMode = InsertionMode.InsertAfter
+            }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="tableId" name="tableId" value="@Model.TableId" />
+            <input type="hidden" id="searchGroupColumnId" name="searchGroupColumnId" />
+            <input type="submit" class="btn btn-info" value="Group追加" />
+        }
+    </div>
+
+    <div class="ml-2">
+
+        @using (Ajax.BeginForm("AjaxSelectList", "Search",
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                UpdateTargetId = "addSelectControl",
+                InsertionMode = InsertionMode.InsertAfter
+            }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="tableId" name="tableId" value="@Model.TableId" />
+            <input type="hidden" id="searchSelectColumnId" name="searchSelectColumnId" />
+            <input type="submit" class="btn btn-info" value="Select追加" />
+        }
+    </div>
+
+</div>
 
 
 @using (Ajax.BeginForm("SearchPost", new AjaxOptions() { UpdateTargetId = "result", HttpMethod = "POST" }))
 {
-    <div id="addSearchControl">
+    <div class="mt-2">
+        <label>Where</label>
+        <div id="addSearchControl">
 
+        </div>
     </div>
 
-    <br />
+    <hr />
 
-    <div id="addGroupControl">
+    <div>
+        <label>Group</label>
+        <div id="addGroupControl">
 
+        </div>
     </div>
 
-    <br />
+    <hr />
 
-    <div id="addSelectControl">
+    <div>
+        <label>Select</label>
+        <div id="addSelectControl">
 
+        </div>
     </div>
 
-    <br />
+    <hr />
 
     <div>
         <input type="submit" class="btn btn-primary" value="Search" />
@@ -87,10 +120,14 @@
             document.getElementById(id).remove();
         }
 
-        function textOnChange($this) {
-            document.getElementById('searchWhereName').value = $this.value;
-            document.getElementById('searchGroupName').value = $this.value;
-            document.getElementById('searchSelectName').value = $this.value;
+        function selectOnChange($this) {
+            document.getElementById('searchWhereColumnId').value = $this.value;
+            document.getElementById('searchGroupColumnId').value = $this.value;
+            document.getElementById('searchSelectColumnId').value = $this.value;
+        }
+
+        window.onload = function(){
+            selectOnChange(document.getElementById('inputName'));
         }
     </script>
 

@@ -11,9 +11,11 @@ namespace AspNetSearch.Models.Search
 
         FetchAllTableInfoOutput FetchAllTableInfo(FetchAllTableInfoInput intput);
 
-        FetchTableColumnInfoOutput FetchTableColumnInfo(FetchTableColumnInfoInput input);
+        FetchTableAllColumnInfoOutput FetchTableAllColumnInfo(FetchTableAllColumnInfoInput input);
 
         FetchTableInfoOutput FetchTableInfo(FetchTableInfoInput input);
+
+        FetchTableColumnInfoOutput FetchTableColumnInfo(FetchTableColumnInfoInput input);
 
     }
 
@@ -57,12 +59,12 @@ namespace AspNetSearch.Models.Search
 
 
 
-    public class FetchTableColumnInfoInput
+    public class FetchTableAllColumnInfoInput
     {
-        public int Id { get; set; }
+        public int TableId { get; set; }
     }
 
-    public class FetchTableColumnInfoOutput
+    public class FetchTableAllColumnInfoOutput
     {
         public IEnumerable<FetchTableColumnDetailInfo> FetchTableColumnDetails { get; set; }
     }
@@ -70,7 +72,7 @@ namespace AspNetSearch.Models.Search
     public class FetchTableColumnDetailInfo
     {
 
-        public int Id { get; set; }
+        public int ColumnId { get; set; }
 
         public string ColumnName { get; set; }
 
@@ -78,5 +80,16 @@ namespace AspNetSearch.Models.Search
 
     }
 
+
+
+    public class FetchTableColumnInfoInput
+    {
+        public int ColumnId { get; set; }
+    }
+
+    public class FetchTableColumnInfoOutput
+    {
+        public FetchTableColumnDetailInfo ColumnInfo { get; set; }
+    }
 
 }

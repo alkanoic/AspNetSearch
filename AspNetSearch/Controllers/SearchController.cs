@@ -41,6 +41,22 @@ namespace AspNetSearch.Controllers
             if (tableId.HasValue == false) return RedirectToAction("Index");
 
             var vm = new SearchViewModel(tableId.Value);
+            var list = new List<SearchTableColumn>();
+
+            var input = new Models.Search.FetchTableAllColumnInfoInput();
+            input.TableId = tableId.Value;
+            var output = fetchTableInfoRepository.FetchTableAllColumnInfo(input);
+
+            foreach(var item in output.FetchTableColumnDetails)
+            {
+                var i = new SearchTableColumn();
+                i.ColumnId = item.ColumnId;
+                i.ColumnName = item.ColumnName;
+                i.ColumnDisplayName = item.ColumnDisplayName;
+                list.Add(i);
+            }
+
+            vm.Columns = list;
             return View(vm);
         }
 
@@ -48,29 +64,43 @@ namespace AspNetSearch.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AjaxList(string searchWhereName)
+        public ActionResult AjaxWhereList(int tableId, int searchWhereColumnId)
         {
             var vm = new SearchWhereControlViewModel();
             vm.SearchId = id++;
-            vm.SearchName = searchWhereName;
+            var input = new Models.Search.FetchTableColumnInfoInput();
+            input.ColumnId = searchWhereColumnId;
+            var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
+            vm.SearchName = output.ColumnInfo.ColumnName;
+            vm.SearchDisplayName = output.ColumnInfo.ColumnDisplayName;
             return PartialView("_SearchWhereControl", vm);
         }
 
         [HttpPost]
-        public ActionResult AjaxGroupList(string searchGroupName)
+        [ValidateAntiForgeryToken]
+        public ActionResult AjaxGroupList(int tableId, int searchGroupColumnId)
         {
             var vm = new SearchGroupControlViewModel();
             vm.SearchId = id++;
-            vm.SearchGroupName = searchGroupName;
+            var input = new Models.Search.FetchTableColumnInfoInput();
+            input.ColumnId = searchGroupColumnId;
+            var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
+            vm.SearchGroupName = output.ColumnInfo.ColumnName;
+            vm.SearchDisplayName = output.ColumnInfo.ColumnDisplayName;
             return PartialView("_SearchGroupControl", vm);
         }
 
         [HttpPost]
-        public ActionResult AjaxSelectList(string searchSelectName)
+        [ValidateAntiForgeryToken]
+        public ActionResult AjaxSelectList(int tableId, int searchSelectColumnId)
         {
             var vm = new SearchSelectControlViewModel();
             vm.SearchId = id++;
-            vm.SearchSelectName = searchSelectName;
+            var input = new Models.Search.FetchTableColumnInfoInput();
+            input.ColumnId = searchSelectColumnId;
+            var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
+            vm.SearchSelectName = output.ColumnInfo.ColumnName;
+            vm.SearchDisplayName = output.ColumnInfo.ColumnDisplayName;
             return PartialView("_SearchSelectControl", vm);
         }
 

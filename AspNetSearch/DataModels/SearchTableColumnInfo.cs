@@ -8,9 +8,9 @@ namespace AspNetSearch.DataModels
     public class SearchTableColumnInfo
     {
 
-        public int Id { get; set; }
+        public int TableId { get; set; }
 
-        public string TableName { get; set; }
+        public int ColumnId { get; set; }
 
         public string TableColumnName { get; set; }
 
