@@ -13,6 +13,8 @@ namespace AspNetSearch.ViewModels
 
         public string SearchName { get; set; }
 
+        public string SearchDisplayName { get; set; }
+
         [Required]
         public string SearchValue { get; set; }
 

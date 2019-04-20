@@ -8,9 +8,9 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body>
-    <nav class="navbar navbar-dark bg-dark">
-        @Html.ActionLink("アプリケーション名", "Index", "Search", new { area = "" }, new { @class = "navbar-brand" })
+<body style="padding-top:4.5rem;">
+    <nav class="navbar fixed-top navbar-dark bg-dark">
+        @Html.ActionLink("AspNetSearch", "Index", "Search", new { area = "" }, new { @class = "navbar-brand" })
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
