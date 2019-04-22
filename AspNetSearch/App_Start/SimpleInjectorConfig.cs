@@ -21,6 +21,7 @@ namespace AspNetSearch.App_Start
 
             // Register your types, for instance:
             container.Register<IFetchTableInfoRepository, FetchTableInfoRepositoryInMemory>(Lifestyle.Scoped);
+            container.Register<ISaveSearchSettingRepository, SaveSearchSettingRepositoryInMemory>(Lifestyle.Scoped);
 
             // This is an extension method from the integration package.
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());

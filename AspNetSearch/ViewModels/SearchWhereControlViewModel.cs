@@ -11,7 +11,7 @@ namespace AspNetSearch.ViewModels
 
         public int SearchId { get; set; }
 
-        public string SearchName { get; set; }
+        public string SearchWhereName { get; set; }
 
         public string SearchDisplayName { get; set; }
 
