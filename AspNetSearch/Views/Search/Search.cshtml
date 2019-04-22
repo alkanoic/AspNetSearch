@@ -99,10 +99,12 @@
     <hr />
 
     <div>
-        <input type="submit" class="btn btn-primary" value="Search" />
+        <input type="submit" class="btn btn-primary" name="Search" value="Search" />
+        <input type="submit" class="btn btn-primary" name="Save" value="Save" onclick="onSave()" />
     </div>
 
     <input type="hidden" name="tableId" value="@Model.TableId" />
+    <input type="hidden" name="saveName" id="saveName" />
     @Html.AntiForgeryToken()
 }
 
@@ -118,6 +120,11 @@
     <script>
         function deleteControl(id) {
             document.getElementById(id).remove();
+        }
+
+        function onSave() {
+            saveName = window.prompt("保存する名前を入力してください。", "");
+            document.getElementById('saveName').value = saveName;
         }
 
         function selectOnChange($this) {

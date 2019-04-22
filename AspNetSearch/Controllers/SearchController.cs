@@ -1,8 +1,6 @@
 ﻿using AspNetSearch.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace AspNetSearch.Controllers
@@ -12,9 +10,13 @@ namespace AspNetSearch.Controllers
 
         private readonly Models.Search.IFetchTableInfoRepository fetchTableInfoRepository;
 
-        public SearchController(Models.Search.IFetchTableInfoRepository fetchTableInfoRepository)
+        private readonly Models.Search.ISaveSearchSettingRepository saveSearchSettingRepository;
+
+        public SearchController(Models.Search.IFetchTableInfoRepository fetchTableInfoRepository,
+            Models.Search.ISaveSearchSettingRepository saveSearchSettingRepository)
         {
             this.fetchTableInfoRepository = fetchTableInfoRepository;
+            this.saveSearchSettingRepository = saveSearchSettingRepository;
         }
 
 
@@ -71,7 +73,7 @@ namespace AspNetSearch.Controllers
             var input = new Models.Search.FetchTableColumnInfoInput();
             input.ColumnId = searchWhereColumnId;
             var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
-            vm.SearchName = output.ColumnInfo.ColumnName;
+            vm.SearchWhereName = output.ColumnInfo.ColumnName;
             vm.SearchDisplayName = output.ColumnInfo.ColumnDisplayName;
             return PartialView("_SearchWhereControl", vm);
         }
@@ -106,7 +108,7 @@ namespace AspNetSearch.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SearchPost(int tableId,
+        public ActionResult SearchPost(string Search, string Save, string saveName, int tableId,
             string[] SearchWhereName,
             string[] SearchValue,
             string[] SearchRange,
@@ -114,6 +116,7 @@ namespace AspNetSearch.Controllers
             string[] SearchSelectName,
             string[] SearchSelectValue)
         {
+
             var vm = new ViewModels.SearchQueryViewModel();
 
             if (SearchSelectName == null)
@@ -133,9 +136,9 @@ namespace AspNetSearch.Controllers
 
             var model = new Models.SearchModel();
 
+            model.WhereModel = new List<Models.SearchWhereModel>();
             if (SearchWhereName != null)
             {
-                model.WhereModel = new List<Models.SearchWhereModel>();
                 for (var i = 0; i <= SearchWhereName.Length - 1; i++)
                 {
                     var sm = new Models.SearchWhereModel(SearchWhereName[i], (Models.WhereRangeEnum)int.Parse(SearchRange[i]), SearchValue[i]);
@@ -143,9 +146,9 @@ namespace AspNetSearch.Controllers
                 }
             }
 
+            model.GroupModel = new List<Models.SearchGroupModel>();
             if (SearchGroupName != null)
             {
-                model.GroupModel = new List<Models.SearchGroupModel>();
                 for (var i = 0; i <= SearchGroupName.Length - 1; i++)
                 {
                     var sm = new Models.SearchGroupModel(SearchGroupName[i]);
@@ -153,9 +156,9 @@ namespace AspNetSearch.Controllers
                 }
             }
 
+            model.SelectModel = new List<Models.SearchSelectModel>();
             if (SearchSelectName != null)
             {
-                model.SelectModel = new List<Models.SearchSelectModel>();
                 for (var i = 0; i <= SearchSelectName.Length - 1; i++)
                 {
                     var sm = new Models.SearchSelectModel(SearchSelectName[i], (Models.SelectValueEnum)int.Parse(SearchSelectValue[i]));
@@ -163,30 +166,79 @@ namespace AspNetSearch.Controllers
                 }
             }
 
-            var query = new DbExtensions.SqlBuilder();
-            foreach (var item in model.SelectModel)
+            if (Save != null)
             {
-                query.SELECT(item.ToSelectSql());
+                var tableInput = new Models.Search.FetchTableAllColumnInfoInput();
+                tableInput.TableId = tableId;
+                var tableOutput = fetchTableInfoRepository.FetchTableAllColumnInfo(tableInput);
+
+                var input = new Models.Search.SaveSearchSettingInput();
+                input.SearchSettingName = saveName;
+                input.SearchTableId = tableId;
+                var groups = new List<Models.Search.SaveSearchGroupInput>();
+                var wheres = new List<Models.Search.SaveSearchWhereInput>();
+                var selects = new List<Models.Search.SaveSearchSelectInput>();
+
+                foreach(var item in model.GroupModel)
+                {
+                    var group = new Models.Search.SaveSearchGroupInput();
+                    var r = tableOutput.FetchTableColumnDetails.Where(x => x.ColumnName == item.GroupColumn).SingleOrDefault();
+                    group.GroupColumnId = r.ColumnId;
+                    groups.Add(group);
+                }
+
+                foreach(var item in model.SelectModel)
+                {
+                    var select = new Models.Search.SaveSearchSelectInput();
+                    var r = tableOutput.FetchTableColumnDetails.Where(x => x.ColumnName == item.SelectColumn).SingleOrDefault();
+                    select.SelectColumnId = r.ColumnId;
+                    select.SearchSelectValue = item.SelectValue;
+                    selects.Add(select);
+                }
+
+                foreach(var item in model.WhereModel)
+                {
+                    var where = new Models.Search.SaveSearchWhereInput();
+                    var r = tableOutput.FetchTableColumnDetails.Where(x => x.ColumnName == item.WhereColumn).SingleOrDefault();
+                    where.WhereColumnId = r.ColumnId;
+                    where.WhereRange = item.WhereRange;
+                    where.WhereValue = item.WhereValue;
+                    wheres.Add(where);
+                }
+
+                input.Groups = groups;
+                input.Wheres = wheres;
+                input.Selects = selects;
+
+                saveSearchSettingRepository.SaveSearchSetting(input);
+                var messageVm = new ViewModels.MessageViewModel();
+                messageVm.Message = "Success";
+                return PartialView("_Message", messageVm);
             }
-            query.FROM(tableInfo.TableInfo.TableName);
-            if (model.WhereModel != null)
+            else
             {
+                //Search
+
+                var query = new DbExtensions.SqlBuilder();
+                foreach (var item in model.SelectModel)
+                {
+                    query.SELECT(item.ToSelectSql());
+                }
+                query.FROM(tableInfo.TableInfo.TableName);
                 foreach (var item in model.WhereModel)
                 {
                     query.WHERE(item.ToWhereSql(), item.WhereValue);
                 }
-            }
-            if (model.GroupModel != null)
-            {
                 foreach (var item in model.GroupModel)
                 {
                     query.GROUP_BY(item.GroupColumn);
                 }
+
+                vm.Query = query.ToString();
+                return PartialView("_SearchQuery", vm);
+
             }
 
-            vm.Query = query.ToString();
-            return PartialView("_SearchQuery", vm);
         }
-
     }
 }

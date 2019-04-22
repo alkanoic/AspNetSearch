@@ -4,7 +4,7 @@
         <input type="button" value="delete" class="btn btn-danger btn-sm ml-1" onclick="deleteControl(@Model.SearchId)" />
 
         <label class="">@Model.SearchDisplayName</label>
-        @Html.HiddenFor(m => m.SearchName)
+        @Html.HiddenFor(m => m.SearchWhereName)
         @Html.TextBoxFor(m => m.SearchValue, new { @class = "form-control ml-1" })
         @Html.DropDownListFor(m => m.SearchRange, new SelectListItem[] {
             new SelectListItem() { Value="0", Text="=" },
