@@ -12,6 +12,12 @@ namespace AspNetSearch.ViewModels
 
         public IEnumerable<SearchTableColumn> Columns { get; set; }
 
+        public IEnumerable<SearchWhereControlViewModel> WhereDetails { get; set; }
+
+        public IEnumerable<SearchGroupControlViewModel> GroupDetails { get; set; }
+
+        public IEnumerable<SearchSelectControlViewModel> SelectDetails { get; set; }
+
         public SearchViewModel(int tableId)
         {
             TableId = tableId;

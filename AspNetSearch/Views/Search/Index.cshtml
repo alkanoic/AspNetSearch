@@ -5,10 +5,20 @@
 
 <h2>Index</h2>
 
+
+<h3>Table</h3>
 @foreach (var item in Model.Details)
 {
     <div>
         @Html.ActionLink(item.TableDisplayName, "Search", "Search", new { tableId = item.TableId }, new { @class = "btn btn-info mt-2" })
+    </div>
+}
+
+<h3>Save</h3>
+@foreach(var item in Model.SaveDetails)
+{
+    <div>
+        @Html.ActionLink(item.SearchSettingName, "Search", "Search", new { tableId = item.TableId, settingId = item.SearchSettingId }, new { @class = "btn btn-info mt-2" })
     </div>
 }
 

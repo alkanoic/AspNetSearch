@@ -16,6 +16,75 @@ namespace AspNetSearch.Models.Search
 
         public static Dictionary<int, DataModels.SaveSearchSettingWhere> KeyValueWheres = new Dictionary<int, DataModels.SaveSearchSettingWhere>();
 
+        public FetchAllSettingOutput FetchAllSetting()
+        {
+            var output = new FetchAllSettingOutput();
+            var list = new List<FetchAllSettingDetailOutput>();
+            foreach(var item in KeyValueSettings.Values)
+            {
+                var detail = new FetchAllSettingDetailOutput()
+                {
+                    SearchSettingId = item.SearchSettingId,
+                    SearchSettingName = item.SearchSettingName,
+                    TableId = item.SearchTableId
+                };
+                list.Add(detail);
+            }
+            output.Details = list;
+            return output;
+        }
+
+        public FetchSettingOutput FetchSetting(FetchSettingInput input)
+        {
+            var output = new FetchSettingOutput();
+            var wheres = new List<SaveSearchWhereOutput>();
+            foreach(var item in KeyValueWheres.Values.Where(x => x.SearchSettingId == input.SearchSettingId))
+            {
+                var result = FetchTableInfoRepositoryInMemory.KeyValueColumns.Values.Single(x => x.ColumnId == item.WhereColumnId);
+                var w = new SaveSearchWhereOutput()
+                {
+                    WhereColumnId = item.WhereColumnId,
+                    WhereRange = (WhereRangeEnum)item.WhereRange,
+                    WhereValue = item.WhereValue,
+                    WhereColumnName = result.TableColumnName,
+                    WhereColumnDisplayName = result.TableColumnDisplayName
+                };
+                wheres.Add(w);
+            }
+
+            var groups = new List<SaveSearchGroupOutput>();
+            foreach (var item in KeyValueGroups.Values.Where(x => x.SearchSettingId == input.SearchSettingId))
+            {
+                var result = FetchTableInfoRepositoryInMemory.KeyValueColumns.Values.Single(x => x.ColumnId == item.GroupColumnId);
+                var g = new SaveSearchGroupOutput()
+                {
+                    GroupColumnId = item.GroupColumnId,
+                    GroupColumnDisplayName = result.TableColumnDisplayName,
+                    GroupColumnName = result.TableColumnName
+                };
+                groups.Add(g);
+            }
+
+            var selects = new List<SaveSearchSelectOutput>();
+            foreach (var item in KeyValueSelects.Values.Where(x => x.SearchSettingId == input.SearchSettingId))
+            {
+                var result = FetchTableInfoRepositoryInMemory.KeyValueColumns.Values.Single(x => x.ColumnId == item.SelectColumnId);
+                var s = new SaveSearchSelectOutput()
+                {
+                    SelectColumnId = item.SelectColumnId,
+                    SearchSelectValue = (SelectValueEnum)item.SearchSelectValue,
+                    SelectColumnDisplayName = result.TableColumnDisplayName,
+                    SelectColumnName = result.TableColumnName
+                };
+                selects.Add(s);
+            }
+
+            output.Wheres = wheres;
+            output.Groups = groups;
+            output.Selects = selects;
+            return output;
+        }
+
         public void SaveSearchSetting(SaveSearchSettingInput input)
         {
 
