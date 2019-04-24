@@ -20,7 +20,7 @@
             new AjaxOptions
             {
                 HttpMethod = "POST",
-                UpdateTargetId = "addSearchControl",
+                UpdateTargetId = "addWhereControl",
                 InsertionMode = InsertionMode.InsertAfter
             }))
         {
@@ -71,9 +71,14 @@
 
 @using (Ajax.BeginForm("SearchPost", new AjaxOptions() { UpdateTargetId = "result", HttpMethod = "POST" }))
 {
+
     <div class="mt-2">
         <label>Where</label>
-        <div id="addSearchControl">
+        @foreach (var item in Model.WhereDetails)
+        {
+            @Html.Partial("_SearchWhereControl", item)
+        }
+        <div id="addWhereControl">
 
         </div>
     </div>
@@ -82,6 +87,10 @@
 
     <div>
         <label>Group</label>
+        @foreach (var item in Model.GroupDetails)
+        {
+            @Html.Partial("_SearchGroupControl", item)
+        }
         <div id="addGroupControl">
 
         </div>
@@ -91,6 +100,10 @@
 
     <div>
         <label>Select</label>
+        @foreach (var item in Model.SelectDetails)
+        {
+            @Html.Partial("_SearchSelectControl", item)
+        }
         <div id="addSelectControl">
 
         </div>

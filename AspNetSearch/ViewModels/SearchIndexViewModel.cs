@@ -10,6 +10,8 @@ namespace AspNetSearch.ViewModels
 
         public IEnumerable<SearchIndexDetail> Details { get; set; }
 
+        public IEnumerable<SaveSearchSettingDetail> SaveDetails { get; set; }
+
     }
 
     public class SearchIndexDetail
@@ -18,5 +20,14 @@ namespace AspNetSearch.ViewModels
 
         public string TableDisplayName { get; set; }
 
+    }
+
+    public class SaveSearchSettingDetail
+    {
+        public int SearchSettingId { get; set; }
+
+        public int TableId { get; set; }
+
+        public string SearchSettingName { get; set; }
     }
 }

@@ -35,10 +35,24 @@ namespace AspNetSearch.Controllers
                 list.Add(i);
             }
             vm.Details = list;
+
+            var saveOutput = saveSearchSettingRepository.FetchAllSetting();
+            var saveList = new List<SaveSearchSettingDetail>();
+            foreach(var item in saveOutput.Details)
+            {
+                var i = new SaveSearchSettingDetail()
+                {
+                    SearchSettingId = item.SearchSettingId,
+                    SearchSettingName = item.SearchSettingName,
+                    TableId = item.TableId
+                };
+                saveList.Add(i);
+            }
+            vm.SaveDetails = saveList;
             return View(vm);
         }
 
-        public ActionResult Search(int? tableId)
+        public ActionResult Search(int? tableId, int? settingId)
         {
             if (tableId.HasValue == false) return RedirectToAction("Index");
 
@@ -59,6 +73,55 @@ namespace AspNetSearch.Controllers
             }
 
             vm.Columns = list;
+
+            var groups = new List<SearchGroupControlViewModel>();
+            var wheres = new List<SearchWhereControlViewModel>();
+            var selects = new List<SearchSelectControlViewModel>();
+            if (settingId.HasValue)
+            {
+                var saveInput = new Models.Search.FetchSettingInput();
+                saveInput.SearchSettingId = settingId.Value;
+                var saveOutput = saveSearchSettingRepository.FetchSetting(saveInput);
+                foreach(var item in saveOutput.Groups)
+                {
+                    var group = new SearchGroupControlViewModel()
+                    {
+                        SearchId = id++,
+                        SearchDisplayName = item.GroupColumnDisplayName,
+                        SearchGroupName = item.GroupColumnName
+                    };
+                    groups.Add(group);
+                }
+
+                foreach(var item in saveOutput.Wheres)
+                {
+                    var where = new SearchWhereControlViewModel()
+                    {
+                        SearchId = id++,
+                        SearchDisplayName = item.WhereColumnDisplayName,
+                        SearchWhereName = item.WhereColumnName,
+                        SearchRange = (int)item.WhereRange,
+                        SearchValue = item.WhereValue
+                    };
+                    wheres.Add(where);
+                }
+
+                foreach(var item in saveOutput.Selects)
+                {
+                    var select = new SearchSelectControlViewModel()
+                    {
+                        SearchId = id++,
+                        SearchDisplayName = item.SelectColumnDisplayName,
+                        SearchSelectName = item.SelectColumnName,
+                        SearchSelectValue = (int)item.SearchSelectValue
+                    };
+                    selects.Add(select);
+                }
+            }
+            vm.GroupDetails = groups;
+            vm.WhereDetails = wheres;
+            vm.SelectDetails = selects;
+
             return View(vm);
         }
 
