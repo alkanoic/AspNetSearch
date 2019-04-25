@@ -86,7 +86,7 @@ namespace AspNetSearch.Controllers
                 {
                     var group = new SearchGroupControlViewModel()
                     {
-                        SearchId = id++,
+                        SearchId = System.Guid.NewGuid().ToString(),
                         SearchDisplayName = item.GroupColumnDisplayName,
                         SearchGroupName = item.GroupColumnName
                     };
@@ -97,7 +97,7 @@ namespace AspNetSearch.Controllers
                 {
                     var where = new SearchWhereControlViewModel()
                     {
-                        SearchId = id++,
+                        SearchId = System.Guid.NewGuid().ToString(),
                         SearchDisplayName = item.WhereColumnDisplayName,
                         SearchWhereName = item.WhereColumnName,
                         SearchRange = (int)item.WhereRange,
@@ -110,7 +110,7 @@ namespace AspNetSearch.Controllers
                 {
                     var select = new SearchSelectControlViewModel()
                     {
-                        SearchId = id++,
+                        SearchId = System.Guid.NewGuid().ToString(),
                         SearchDisplayName = item.SelectColumnDisplayName,
                         SearchSelectName = item.SelectColumnName,
                         SearchSelectValue = (int)item.SearchSelectValue
@@ -125,14 +125,12 @@ namespace AspNetSearch.Controllers
             return View(vm);
         }
 
-        private static int id = 0;
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AjaxWhereList(int tableId, int searchWhereColumnId)
         {
             var vm = new SearchWhereControlViewModel();
-            vm.SearchId = id++;
+            vm.SearchId = System.Guid.NewGuid().ToString();
             var input = new Models.Search.FetchTableColumnInfoInput();
             input.ColumnId = searchWhereColumnId;
             var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
@@ -146,7 +144,7 @@ namespace AspNetSearch.Controllers
         public ActionResult AjaxGroupList(int tableId, int searchGroupColumnId)
         {
             var vm = new SearchGroupControlViewModel();
-            vm.SearchId = id++;
+            vm.SearchId = System.Guid.NewGuid().ToString();
             var input = new Models.Search.FetchTableColumnInfoInput();
             input.ColumnId = searchGroupColumnId;
             var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
@@ -160,7 +158,7 @@ namespace AspNetSearch.Controllers
         public ActionResult AjaxSelectList(int tableId, int searchSelectColumnId)
         {
             var vm = new SearchSelectControlViewModel();
-            vm.SearchId = id++;
+            vm.SearchId = System.Guid.NewGuid().ToString();
             var input = new Models.Search.FetchTableColumnInfoInput();
             input.ColumnId = searchSelectColumnId;
             var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
