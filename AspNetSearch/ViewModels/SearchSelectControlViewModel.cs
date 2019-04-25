@@ -7,7 +7,7 @@ namespace AspNetSearch.ViewModels
 {
     public class SearchSelectControlViewModel
     {
-        public int SearchId { get; set; }
+        public string SearchId { get; set; }
 
         public string SearchSelectName { get; set; }
 

@@ -1,8 +1,8 @@
 ﻿@model AspNetSearch.ViewModels.SearchSelectControlViewModel
 
     <div id="@Model.SearchId" class="form-inline mt-1">
-        <input type="button" value="delete" class="btn btn-danger btn-sm ml-1" onclick="deleteControl(@Model.SearchId)" />
-
+        <input type="button" value="delete" class="btn btn-danger btn-sm ml-1" onclick="deleteControl('@Model.SearchId')" />
+        <span class="badge badge-secondary ml-2 mr-2 handle">↕</span>
         <label class="">@Model.SearchDisplayName</label>
         @Html.HiddenFor(m => m.SearchSelectName)
         @Html.DropDownListFor(m => m.SearchSelectValue, new SelectListItem[] {

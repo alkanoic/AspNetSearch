@@ -71,42 +71,33 @@
 
 @using (Ajax.BeginForm("SearchPost", new AjaxOptions() { UpdateTargetId = "result", HttpMethod = "POST" }))
 {
-
-    <div class="mt-2">
-        <label>Where</label>
+    <br />
+    <label>Where</label>
+    <div id="addWhereControl">
         @foreach (var item in Model.WhereDetails)
         {
             @Html.Partial("_SearchWhereControl", item)
         }
-        <div id="addWhereControl">
-
-        </div>
     </div>
 
     <hr />
 
-    <div>
-        <label>Group</label>
+    <label>Group</label>
+    <div id="addGroupControl">
         @foreach (var item in Model.GroupDetails)
         {
             @Html.Partial("_SearchGroupControl", item)
         }
-        <div id="addGroupControl">
-
-        </div>
     </div>
 
     <hr />
 
-    <div>
-        <label>Select</label>
+    <label>Select</label>
+    <div id="addSelectControl">
         @foreach (var item in Model.SelectDetails)
         {
             @Html.Partial("_SearchSelectControl", item)
         }
-        <div id="addSelectControl">
-
-        </div>
     </div>
 
     <hr />
@@ -146,10 +137,25 @@
             document.getElementById('searchSelectColumnId').value = $this.value;
         }
 
-        window.onload = function(){
+        window.onload = function () {
             selectOnChange(document.getElementById('inputName'));
         }
-    </script>
 
+        new Sortable(addWhereControl, {
+            handle: ".handle",
+            animation: 150
+        });
+
+        new Sortable(addGroupControl, {
+            handle: ".handle",
+            animation: 150
+        });
+
+        new Sortable(addSelectControl, {
+            handle: ".handle",
+            animation: 150
+        });
+
+    </script>
 }
 

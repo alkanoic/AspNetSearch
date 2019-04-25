@@ -8,7 +8,7 @@ namespace AspNetSearch.ViewModels
 	public class SearchGroupControlViewModel
 	{
 
-        public int SearchId { get; set; }
+        public string SearchId { get; set; }
 
         public string SearchDisplayName { get; set; }
 
