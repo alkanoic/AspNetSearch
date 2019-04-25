@@ -9,7 +9,7 @@ namespace AspNetSearch.ViewModels
     public class SearchWhereControlViewModel
     {
 
-        public int SearchId { get; set; }
+        public string SearchId { get; set; }
 
         public string SearchWhereName { get; set; }
 

@@ -30,6 +30,10 @@ namespace AspNetSearch
             // Ajax通信用に追加
             bundles.Add(new ScriptBundle("~/bundles/jqueryajax").Include(
                         "~/Scripts/jquery.unobtrusive-ajax*"));
+
+            bundles.Add(new ScriptBundle("~/bundles/sortable").Include(
+                "~/Scripts/Sortable.min.js"));
+
         }
     }
 }
