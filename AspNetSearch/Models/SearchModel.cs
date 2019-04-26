@@ -10,8 +10,6 @@ namespace AspNetSearch.Models
 
         public List<SearchWhereModel> WhereModel { get; set; }
 
-        public List<SearchGroupModel> GroupModel { get; set; }
-
         public List<SearchSelectModel> SelectModel { get; set; }
     }
 }

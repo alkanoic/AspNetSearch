@@ -10,8 +10,6 @@ namespace AspNetSearch.Models.Search
 
         public static Dictionary<int, DataModels.SaveSearchSetting> KeyValueSettings = new Dictionary<int, DataModels.SaveSearchSetting>();
 
-        public static Dictionary<int, DataModels.SaveSearchSettingGroup> KeyValueGroups = new Dictionary<int, DataModels.SaveSearchSettingGroup>();
-
         public static Dictionary<int, DataModels.SaveSearchSettingSelect> KeyValueSelects = new Dictionary<int, DataModels.SaveSearchSettingSelect>();
 
         public static Dictionary<int, DataModels.SaveSearchSettingWhere> KeyValueWheres = new Dictionary<int, DataModels.SaveSearchSettingWhere>();
@@ -52,19 +50,6 @@ namespace AspNetSearch.Models.Search
                 wheres.Add(w);
             }
 
-            var groups = new List<SaveSearchGroupOutput>();
-            foreach (var item in KeyValueGroups.Values.Where(x => x.SearchSettingId == input.SearchSettingId))
-            {
-                var result = FetchTableInfoRepositoryInMemory.KeyValueColumns.Values.Single(x => x.ColumnId == item.GroupColumnId);
-                var g = new SaveSearchGroupOutput()
-                {
-                    GroupColumnId = item.GroupColumnId,
-                    GroupColumnDisplayName = result.TableColumnDisplayName,
-                    GroupColumnName = result.TableColumnName
-                };
-                groups.Add(g);
-            }
-
             var selects = new List<SaveSearchSelectOutput>();
             foreach (var item in KeyValueSelects.Values.Where(x => x.SearchSettingId == input.SearchSettingId))
             {
@@ -80,7 +65,6 @@ namespace AspNetSearch.Models.Search
             }
 
             output.Wheres = wheres;
-            output.Groups = groups;
             output.Selects = selects;
             return output;
         }
@@ -92,17 +76,6 @@ namespace AspNetSearch.Models.Search
             setting.SearchSettingId = KeyValueSettings.Count + 1;
             setting.SearchSettingName = input.SearchSettingName;
             setting.SearchTableId = input.SearchTableId;
-
-            var groups = new List<DataModels.SaveSearchSettingGroup>();
-            foreach(var item in input.Groups)
-            {
-                var group = new DataModels.SaveSearchSettingGroup();
-                group.SearchSettingId = setting.SearchSettingId;
-                group.GroupColumnId = item.GroupColumnId;
-                group.SearchSettingGroupId = KeyValueGroups.Count + 1;
-                groups.Add(group);
-                KeyValueGroups.Add(group.SearchSettingGroupId, group);
-            }
 
             var wheres = new List<DataModels.SaveSearchSettingWhere>();
             foreach(var item in input.Wheres)
@@ -129,7 +102,6 @@ namespace AspNetSearch.Models.Search
                 KeyValueSelects.Add(select.SearchSettingSelectId, select);
             }
 
-            setting.Groups = groups;
             setting.Selects = selects;
             setting.Wheres = wheres;
             KeyValueSettings.Add(setting.SearchSettingId, setting);

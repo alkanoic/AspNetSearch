@@ -74,7 +74,6 @@ namespace AspNetSearch.Controllers
 
             vm.Columns = list;
 
-            var groups = new List<SearchGroupControlViewModel>();
             var wheres = new List<SearchWhereControlViewModel>();
             var selects = new List<SearchSelectControlViewModel>();
             if (settingId.HasValue)
@@ -82,16 +81,6 @@ namespace AspNetSearch.Controllers
                 var saveInput = new Models.Search.FetchSettingInput();
                 saveInput.SearchSettingId = settingId.Value;
                 var saveOutput = saveSearchSettingRepository.FetchSetting(saveInput);
-                foreach(var item in saveOutput.Groups)
-                {
-                    var group = new SearchGroupControlViewModel()
-                    {
-                        SearchId = System.Guid.NewGuid().ToString(),
-                        SearchDisplayName = item.GroupColumnDisplayName,
-                        SearchGroupName = item.GroupColumnName
-                    };
-                    groups.Add(group);
-                }
 
                 foreach(var item in saveOutput.Wheres)
                 {
@@ -118,7 +107,6 @@ namespace AspNetSearch.Controllers
                     selects.Add(select);
                 }
             }
-            vm.GroupDetails = groups;
             vm.WhereDetails = wheres;
             vm.SelectDetails = selects;
 
@@ -137,20 +125,6 @@ namespace AspNetSearch.Controllers
             vm.SearchWhereName = output.ColumnInfo.ColumnName;
             vm.SearchDisplayName = output.ColumnInfo.ColumnDisplayName;
             return PartialView("_SearchWhereControl", vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult AjaxGroupList(int tableId, int searchGroupColumnId)
-        {
-            var vm = new SearchGroupControlViewModel();
-            vm.SearchId = System.Guid.NewGuid().ToString();
-            var input = new Models.Search.FetchTableColumnInfoInput();
-            input.ColumnId = searchGroupColumnId;
-            var output = fetchTableInfoRepository.FetchTableColumnInfo(input);
-            vm.SearchGroupName = output.ColumnInfo.ColumnName;
-            vm.SearchDisplayName = output.ColumnInfo.ColumnDisplayName;
-            return PartialView("_SearchGroupControl", vm);
         }
 
         [HttpPost]
@@ -207,16 +181,6 @@ namespace AspNetSearch.Controllers
                 }
             }
 
-            model.GroupModel = new List<Models.SearchGroupModel>();
-            if (SearchGroupName != null)
-            {
-                for (var i = 0; i <= SearchGroupName.Length - 1; i++)
-                {
-                    var sm = new Models.SearchGroupModel(SearchGroupName[i]);
-                    model.GroupModel.Add(sm);
-                }
-            }
-
             model.SelectModel = new List<Models.SearchSelectModel>();
             if (SearchSelectName != null)
             {
@@ -236,17 +200,8 @@ namespace AspNetSearch.Controllers
                 var input = new Models.Search.SaveSearchSettingInput();
                 input.SearchSettingName = saveName;
                 input.SearchTableId = tableId;
-                var groups = new List<Models.Search.SaveSearchGroupInput>();
                 var wheres = new List<Models.Search.SaveSearchWhereInput>();
                 var selects = new List<Models.Search.SaveSearchSelectInput>();
-
-                foreach(var item in model.GroupModel)
-                {
-                    var group = new Models.Search.SaveSearchGroupInput();
-                    var r = tableOutput.FetchTableColumnDetails.Where(x => x.ColumnName == item.GroupColumn).SingleOrDefault();
-                    group.GroupColumnId = r.ColumnId;
-                    groups.Add(group);
-                }
 
                 foreach(var item in model.SelectModel)
                 {
@@ -267,7 +222,6 @@ namespace AspNetSearch.Controllers
                     wheres.Add(where);
                 }
 
-                input.Groups = groups;
                 input.Wheres = wheres;
                 input.Selects = selects;
 
@@ -280,6 +234,8 @@ namespace AspNetSearch.Controllers
             {
                 //Search
 
+                var parameters = new List<string>();
+
                 var query = new DbExtensions.SqlBuilder();
                 foreach (var item in model.SelectModel)
                 {
@@ -289,13 +245,27 @@ namespace AspNetSearch.Controllers
                 foreach (var item in model.WhereModel)
                 {
                     query.WHERE(item.ToWhereSql(), item.WhereValue);
+                    parameters.Add(item.WhereValue);
                 }
-                foreach (var item in model.GroupModel)
+                if(model.SelectModel.Any(x => x.SelectValue != Models.SelectValueEnum.Raw))
                 {
-                    query.GROUP_BY(item.GroupColumn);
+                    foreach (var item in model.SelectModel.Where(x => x.SelectValue == Models.SelectValueEnum.Raw))
+                    {
+                        query.GROUP_BY(item.SelectColumn);
+                    }
                 }
 
-                vm.Query = query.ToString();
+                DbExtensions.DatabaseConfiguration.DefaultProviderInvariantName = Properties.Settings.Default.ProviderName;
+                DbExtensions.DatabaseConfiguration.DefaultConnectionString = Properties.Settings.Default.DefaultConnection;
+                var db = new DbExtensions.Database();
+                var command = db.CreateCommand(query);
+
+                var paramstring = new System.Text.StringBuilder();
+                foreach(var item in parameters)
+                {
+                    paramstring.AppendLine(item);
+                }
+                vm.Query = command.CommandText + "\r\n" + paramstring.ToString();
                 return PartialView("_SearchQuery", vm);
 
             }

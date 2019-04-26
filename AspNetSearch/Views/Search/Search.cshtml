@@ -34,23 +34,6 @@
 
     <div class="ml-2">
 
-        @using (Ajax.BeginForm("AjaxGroupList", "Search",
-            new AjaxOptions
-            {
-                HttpMethod = "POST",
-                UpdateTargetId = "addGroupControl",
-                InsertionMode = InsertionMode.InsertAfter
-            }))
-        {
-            @Html.AntiForgeryToken()
-            <input type="hidden" id="tableId" name="tableId" value="@Model.TableId" />
-            <input type="hidden" id="searchGroupColumnId" name="searchGroupColumnId" />
-            <input type="submit" class="btn btn-info" value="Group追加" />
-        }
-    </div>
-
-    <div class="ml-2">
-
         @using (Ajax.BeginForm("AjaxSelectList", "Search",
             new AjaxOptions
             {
@@ -77,16 +60,6 @@
         @foreach (var item in Model.WhereDetails)
         {
             @Html.Partial("_SearchWhereControl", item)
-        }
-    </div>
-
-    <hr />
-
-    <label>Group</label>
-    <div id="addGroupControl">
-        @foreach (var item in Model.GroupDetails)
-        {
-            @Html.Partial("_SearchGroupControl", item)
         }
     </div>
 
@@ -133,7 +106,6 @@
 
         function selectOnChange($this) {
             document.getElementById('searchWhereColumnId').value = $this.value;
-            document.getElementById('searchGroupColumnId').value = $this.value;
             document.getElementById('searchSelectColumnId').value = $this.value;
         }
 
@@ -142,11 +114,6 @@
         }
 
         new Sortable(addWhereControl, {
-            handle: ".handle",
-            animation: 150
-        });
-
-        new Sortable(addGroupControl, {
             handle: ".handle",
             animation: 150
         });
