@@ -77,7 +77,7 @@
 
     <div>
         <input type="submit" class="btn btn-primary" name="Search" value="Search" />
-        <input type="submit" class="btn btn-primary" name="Save" value="Save" onclick="onSave()" />
+        <input type="submit" class="btn btn-primary" name="Save" value="Save" onclick="return onSave()" />
     </div>
 
     <input type="hidden" name="tableId" value="@Model.TableId" />
@@ -101,6 +101,9 @@
 
         function onSave() {
             saveName = window.prompt("保存する名前を入力してください。", "");
+            if (saveName == null) {
+                return false;
+            }
             document.getElementById('saveName').value = saveName;
         }
 

@@ -193,6 +193,10 @@ namespace AspNetSearch.Controllers
 
             if (Save != null)
             {
+                if (string.IsNullOrWhiteSpace(saveName))
+                {
+                    return PartialView("_Message", new MessageViewModel() { Message = "名前入力してください。" });
+                }
                 var tableInput = new Models.Search.FetchTableAllColumnInfoInput();
                 tableInput.TableId = tableId;
                 var tableOutput = fetchTableInfoRepository.FetchTableAllColumnInfo(tableInput);
