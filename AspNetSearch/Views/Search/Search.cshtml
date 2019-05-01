@@ -21,13 +21,16 @@
             {
                 HttpMethod = "POST",
                 UpdateTargetId = "addWhereControl",
-                InsertionMode = InsertionMode.InsertAfter
+                InsertionMode = InsertionMode.InsertAfter, OnBegin = "onBeginForm()", OnComplete = "onCompleteForm()"
             }))
         {
             @Html.AntiForgeryToken()
             <input type="hidden" id="tableId" name="tableId" value="@Model.TableId" />
             <input type="hidden" id="searchWhereColumnId" name="searchWhereColumnId" />
-            <input type="submit" class="btn btn-info" value="Where追加" />
+            <button type="submit" class="btn btn-info formButton" id="addWhereButton">
+                Where追加
+                <span class="spinner-border spinner-border-sm formSpinner" role="status" aria-hidden="true" style="visibility:hidden"></span>
+            </button>
         }
 
     </div>
@@ -39,20 +42,31 @@
             {
                 HttpMethod = "POST",
                 UpdateTargetId = "addSelectControl",
-                InsertionMode = InsertionMode.InsertAfter
+                InsertionMode = InsertionMode.InsertAfter,
+                OnBegin = "onBeginForm()",
+                OnComplete = "onCompleteForm()"
             }))
         {
             @Html.AntiForgeryToken()
             <input type="hidden" id="tableId" name="tableId" value="@Model.TableId" />
             <input type="hidden" id="searchSelectColumnId" name="searchSelectColumnId" />
-            <input type="submit" class="btn btn-info" value="Select追加" />
+            <button type="submit" class="btn btn-info formButton" id="addSelectButton">
+                Select追加
+                <span class="spinner-border spinner-border-sm formSpinner" role="status" aria-hidden="true" style="visibility:hidden"></span>
+            </button>
         }
     </div>
 
 </div>
 
 
-@using (Ajax.BeginForm("SearchPost", new AjaxOptions() { UpdateTargetId = "result", HttpMethod = "POST" }))
+@using (Ajax.BeginForm("SearchPost",
+    new AjaxOptions() {
+        UpdateTargetId = "result",
+        HttpMethod = "POST",
+        OnBegin = "onBeginForm()",
+        OnComplete = "onCompleteForm()"
+    }))
 {
     <br />
     <label>Where</label>
@@ -76,8 +90,14 @@
     <hr />
 
     <div>
-        <input type="submit" class="btn btn-primary" name="Search" value="Search" />
-        <input type="submit" class="btn btn-primary" name="Save" value="Save" onclick="return onSave()" />
+        <button type="submit" class="btn btn-info formButton" name="Search" id="searchButton">
+            Search
+            <span class="spinner-border spinner-border-sm formSpinner" role="status" aria-hidden="true" style="visibility:hidden"></span>
+        </button>
+        <button type="submit" class="btn btn-info formButton" name="Save" id="saveButton" onclick="return onSave()">
+            Save
+            <span class="spinner-border spinner-border-sm formSpinner" role="status" aria-hidden="true" style="visibility:hidden"></span>
+        </button>
     </div>
 
     <input type="hidden" name="tableId" value="@Model.TableId" />
@@ -97,6 +117,16 @@
     <script>
         function deleteControl(id) {
             document.getElementById(id).remove();
+        }
+
+        function onBeginForm() {
+            $(".formButton").prop("disabled", true);
+            $(".formSpinner").css('visibility', '');
+        }
+
+        function onCompleteForm() {
+            $(".formButton").prop("disabled", false);
+            $(".formSpinner").css('visibility', 'hidden');
         }
 
         function onSave() {
