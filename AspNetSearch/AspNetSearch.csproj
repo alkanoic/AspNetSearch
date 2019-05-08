@@ -137,7 +137,6 @@
     <Compile Include="App_Start\SimpleInjectorConfig.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="DataModels\SaveSearchSetting.cs" />
-    <Compile Include="DataModels\SaveSearchSettingGroup.cs" />
     <Compile Include="DataModels\SaveSearchSettingSelect.cs" />
     <Compile Include="DataModels\SaveSearchSettingWhere.cs" />
     <Compile Include="DataModels\SearchTableColumnInfo.cs" />

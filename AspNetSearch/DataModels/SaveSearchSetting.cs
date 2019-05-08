@@ -15,8 +15,6 @@ namespace AspNetSearch.DataModels
         public int SearchTableId { get; set; }
 
 
-        public IEnumerable<SaveSearchSettingGroup> Groups { get; set; }
-
         public IEnumerable<SaveSearchSettingSelect> Selects { get; set; }
 
         public IEnumerable<SaveSearchSettingWhere> Wheres { get; set; }
